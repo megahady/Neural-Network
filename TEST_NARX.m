@@ -38,7 +38,6 @@ plot(t_test(N+1:end), targetSeries_test(N+1:end), 'b', 'LineWidth', 1.5); % Grou
 hold on;
 plot(t_test(N+1:end), predictedSeriesMat_test, 'r--', 'LineWidth', 1.5); % Predicted series (test data)
 legend('Ground Truth', 'NARX Prediction');
-title('NARX Network Prediction on Test Data (sin(t) - sin(3t))');
 xlabel('Time (seconds)');
 ylabel('Value');
 grid on;
