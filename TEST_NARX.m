@@ -1,16 +1,18 @@
 % Define time series parameters
-t_train = 0:0.1:4; % Time from 0 to 4 seconds for training
-inputSeries_train = sin(t_train) + sin(2*t_train); % Training data: sin(t) + sin(2t)
+t_train = 0:0.01:4; % Time from 0 to 4 seconds for training
+inputSeries_train = sin(t_train) + sin(2*t_train)+tanh(t_train); % Training data: sin(t) + sin(2t)
 targetSeries_train = inputSeries_train; % Training targets (same as input for one-step prediction)
 
-t_test = 0:0.1:4; % Time from 0 to 4 seconds for testing
-inputSeries_test = sin(t_test) - 2*cos(5*t_test); % Testing data: sin(t) - sin(3t)
+t_test = 0:0.01:4; % Time from 0 to 4 seconds for testing
+inputSeries_test = sin(t_test) - 1*sin(10*t_test)./(0.1+cosh(t_test)); % Testing data: sin(t) - sin(3t)
 targetSeries_test = inputSeries_test; % Testing targets
 
+N=5;
+
 % Define NARX network parameters
-inputDelays = 1:5; % Use past 5 time steps as input
-feedbackDelays = 1:5; % Use past 5 time steps of output as feedback
-hiddenLayerSize = 10; % Number of neurons in hidden layer
+inputDelays = 1:N; % Use past 5 time steps as input
+feedbackDelays = 1:N; % Use past 5 time steps of output as feedback
+hiddenLayerSize = 5; % Number of neurons in hidden layer
 
 % Create NARX network
 net = narxnet(inputDelays, feedbackDelays, hiddenLayerSize);
@@ -32,9 +34,9 @@ predictedSeriesMat_test = cell2mat(predictedSeries_test);
 
 % Plot ground truth vs estimated values for the test data
 figure;
-plot(t_test(6:end), targetSeries_test(6:end), 'b', 'LineWidth', 1.5); % Ground truth (test data)
+plot(t_test(N+1:end), targetSeries_test(N+1:end), 'b', 'LineWidth', 1.5); % Ground truth (test data)
 hold on;
-plot(t_test(6:end), predictedSeriesMat_test, 'r--', 'LineWidth', 1.5); % Predicted series (test data)
+plot(t_test(N+1:end), predictedSeriesMat_test, 'r--', 'LineWidth', 1.5); % Predicted series (test data)
 legend('Ground Truth', 'NARX Prediction');
 title('NARX Network Prediction on Test Data (sin(t) - sin(3t))');
 xlabel('Time (seconds)');
